@@ -5,6 +5,14 @@ on:
     branches:
       - main
 
+env:
+  PROJECT_ID: internal-sandbox-446612
+  ARTIFACT_REGION: us-central1
+  ARTIFACT_REPO: my-docker-repo
+  IMAGE_NAME: batch_job
+  CLUSTER: microservice
+  REGION: us-central1
+
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
@@ -25,18 +33,24 @@ jobs:
     - name: Set up Google Cloud SDK
       uses: google-github-actions/setup-gcloud@v1
 
-    - name: Configure Docker for GCR
+    - name: Configure Docker for Artifact Registry
       run: |
         gcloud auth configure-docker us-central1-docker.pkg.dev
 
-    - name: Build and Push Docker Image
+    - name: Install gke-gcloud-auth-plugin
       run: |
-        docker build -t us-central1-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/gke-repo/gke-app:latest .
-        docker push us-central1-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/gke-repo/gke-app:latest
+        gcloud components install gke-gcloud-auth-plugin
+
+    - name: Build and Push Docker Image
+      id: build-image
+      run: |
+        IMAGE_TAG=${{ github.sha }}  # Using commit SHA for tagging
+        docker build -t ${ARTIFACT_REGION}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.ARTIFACT_REPO }}/${{ env.IMAGE_NAME }}:${IMAGE_TAG} .
+        docker push ${ARTIFACT_REGION}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.ARTIFACT_REPO }}/${{ env.IMAGE_NAME }}:${IMAGE_TAG}
 
     - name: Configure kubectl
       run: |
-        gcloud container clusters get-credentials gke-cluster --region us-central1 --project ${{ secrets.GCP_PROJECT_ID }}
+        gcloud container clusters get-credentials $CLUSTER --region $REGION --project $PROJECT_ID
 
     - name: Deploy Application to GKE
       run: |
