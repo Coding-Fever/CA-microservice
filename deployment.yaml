@@ -14,6 +14,6 @@ spec:
     spec:
       containers:
       - name: gke-app
-        image: us-central1-docker.pkg.dev/internal-sandbox-446612/my-docker-repo/batch_job@sha256:d005d14bae4c25cef9df454887e3d22d2e5db62c81068144382a93c267576583
+        image: asia-south1-docker.pkg.dev/mineral-hangar-453509-r7/my-docker-repo/batch-job@sha256:242f2b1ccdb846c59d9a0a4eb9c90176734ae8a70525b301c86d7814fc68ed7f
         ports:
         - containerPort: 3000
