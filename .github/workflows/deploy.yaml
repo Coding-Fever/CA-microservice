@@ -6,12 +6,12 @@ on:
       - main
 
 env:
-  PROJECT_ID: mineral-hangar-453509-r7
-  ARTIFACT_REGION: asia-south1
+  PROJECT_ID: halogen-acumen-454303-k2
+  ARTIFACT_REGION: us-central1
   ARTIFACT_REPO: my-docker-repo
   IMAGE_NAME: batch-job
-  CLUSTER: cluster-1
-  REGION: asia-south1
+  CLUSTER: gkefleet-cluster-1
+  REGION: us-central1
 
 jobs:
   build-and-deploy:
@@ -28,14 +28,14 @@ jobs:
     - name: Authenticate with Google Cloud
       uses: google-github-actions/auth@v1
       with:
-        credentials_json: ${{ secrets.GCP_POC_KEY }}
+        credentials_json: ${{ secrets.GCP_KEY }}
 
     - name: Set up Google Cloud SDK
       uses: google-github-actions/setup-gcloud@v1
 
     - name: Configure Docker for Artifact Registry
       run: |
-        gcloud auth configure-docker asia-south1-docker.pkg.dev
+        gcloud auth configure-docker us-central1-docker.pkg.dev
 
     - name: Install gke-gcloud-auth-plugin
       run: |
